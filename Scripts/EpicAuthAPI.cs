@@ -12,13 +12,13 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 
-namespace KeyAuth
+namespace EpicAuth
 {
     public class api : MonoBehaviour
     {
         public string name, ownerid, secret, version;
         /// <summary>
-        /// Set up your application credentials in order to use keyauth
+        /// Set up your application credentials in order to use EpicAuth
         /// </summary>
         /// <param name="name">Application Name</param>
         /// <param name="ownerid">Your OwnerID, can be found in your account settings.</param>
@@ -134,7 +134,7 @@ namespace KeyAuth
         private string sessionid, enckey;
         bool initialized;
         /// <summary>
-        /// Initializes the connection with keyauth in order to use any of the functions
+        /// Initializes the connection with EpicAuth in order to use any of the functions
         /// </summary>
         /// 
         IEnumerator Error_ApplicatonNotFound()
@@ -161,7 +161,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            if (response == "KeyAuth_Invalid")
+            if (response == "EpicAuth_Invalid")
             {
                 StartCoroutine(Error_ApplicatonNotFound());
             }
@@ -192,7 +192,7 @@ namespace KeyAuth
         /// 
         IEnumerator Error_PleaseInitializeFirst()
         {
-            UnityEngine.Debug.LogError("Please Initialize First. Put KeyAuthApp.Init(); on the start function of your login scene.");
+            UnityEngine.Debug.LogError("Please Initialize First. Put EpicAuthApp.Init(); on the start function of your login scene.");
             yield return new WaitForSeconds(3);
             Application.Quit();
         }
@@ -668,7 +668,7 @@ namespace KeyAuth
             return null;
         }
         /// <summary>
-        /// KeyAuth acts as proxy and downlods the file in a secure way
+        /// EpicAuth acts as proxy and downlods the file in a secure way
         /// </summary>
         /// <param name="fileid">File ID</param>
         /// <returns>The bytes of the download file</returns>
@@ -761,7 +761,7 @@ namespace KeyAuth
                         UnityEngine.Debug.LogError("You're connecting too fast. Please slow down your requests and try again");
                         Application.Quit();
                         return "";
-                    default: // site won't resolve. you should use keyauth.uk domain since it's not blocked by any ISPs
+                    default: // site won't resolve. you should use EpicAuth.uk domain since it's not blocked by any ISPs
                         UnityEngine.Debug.LogError("Connection failed. Please try again");
                         Application.Quit();
                         return "";
@@ -791,7 +791,7 @@ namespace KeyAuth
                     case (HttpStatusCode)429: // client hit our rate limit
                         return new WaitForSeconds(3).ToString();
                         return req(post_data);
-                    default: // site won't resolve. you should use keyauth.uk domain since it's not blocked by any ISPs
+                    default: // site won't resolve. you should use EpicAuth.uk domain since it's not blocked by any ISPs
                         UnityEngine.Debug.LogError("Connection failed. Please try again");
                         Application.Quit();
                         return "";

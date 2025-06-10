@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using KeyAuth;
+using EpicAuth;
 using System;
 using System.IO;
 
-public class KeyAuthManager : MonoBehaviour
+public class EpicAuthManager : MonoBehaviour
 {
-    // KeyAuth website - https://keyauth.site or https://keyauth.site
-    // KeyAuth Github - https://github.com/keyauth
-    // KeyAuth docs - https://docs.keyauth.site
+    // EpicAuth website - https://keyauth.site or https://keyauth.site
+    // EpicAuth Github - https://github.com/EpicAuth
+    // EpicAuth docs - https://docs.keyauth.site
 
     [Header("Login Section")]
     public TMP_InputField loginUsernameBox;  // needed - to retrieve your username
@@ -21,7 +21,7 @@ public class KeyAuthManager : MonoBehaviour
     [Header("Register Section")]
     public TMP_InputField registerUsernameBox;   // needed - to retrieve your username
     public TMP_InputField registerPasswordBox;   // needed - to retrieve your password 
-    public TMP_InputField registerConfirmPasswordBox;   // optional, this will not be checked by KeyAuth - confirm your password 
+    public TMP_InputField registerConfirmPasswordBox;   // optional, this will not be checked by EpicAuth - confirm your password 
     public TMP_InputField registerLicenseBox;   // needed, if you do not want to require your users to enter a license you will need to purchase the seller subscription for $19.99 a year
 
     [Header("Logs")]
@@ -35,23 +35,23 @@ public class KeyAuthManager : MonoBehaviour
 
     [Header("User Data")]
     public TextMeshProUGUI userDataBox; // needed - will display all information about you (username, hwid, ip, subscription, end date, etc) 
-    public TextMeshProUGUI onlineUsersDisplay; // needed - will display all the active SESSIONS! this is not the number of people currently using the app, rather than the number of active sessions. You can change the session time to expire though if you'd like via the KeyAuth settings
+    public TextMeshProUGUI onlineUsersDisplay; // needed - will display all the active SESSIONS! this is not the number of people currently using the app, rather than the number of active sessions. You can change the session time to expire though if you'd like via the EpicAuth settings
 
     [Header("Chatroom")]
     public TMP_InputField chatroomInputField; // needed - the message that you want to send
     public TextMeshProUGUI chatroomMessageDisplay; // needed - the label or whatever you choose, that will display all of the messages. it's recommened you use just a label, but if you are good with Instantiating then you can do that as well :) 
     public float timeToGatherMessages = 10f; // needed - the time it will take to retrieve messages, you can change this to whatever you'd like, or you can remove it and use an IEnumerator, you're choice. 
 
-    public string chatroomChannel = "testing"; // enter the name of your chatroom here, it must match on the KeyAuth dashboard or it won't work.
-    public KeyCode SendKeyAuthMessage = KeyCode.Return; // return is {ENTER}
+    public string chatroomChannel = "testing"; // enter the name of your chatroom here, it must match on the EpicAuth dashboard or it won't work.
+    public KeyCode SendEpicAuthMessage = KeyCode.Return; // return is {ENTER}
 
     /// <summary>
-    /// You can get all of this information from visiting the KeyAuth dashboard. You can copy and paste it all from the c# section, make sure you change all of this information to YOUR app details. This is a test app that was deleted!
+    /// You can get all of this information from visiting the EpicAuth dashboard. You can copy and paste it all from the c# section, make sure you change all of this information to YOUR app details. This is a test app that was deleted!
     /// </summary>
-    public static api KeyAuthApp = new api(
-     name: "NameOfYourKeyAuthApp",
-     ownerid: "KeyAuthOwnerID",
-     secret: "KeyAuthAppSecret",
+    public static api EpicAuthApp = new api(
+     name: "NameOfYourEpicAuthApp",
+     ownerid: "EpicAuthOwnerID",
+     secret: "EpicAuthAppSecret",
      version: "1.0"
     );
 
@@ -70,8 +70,8 @@ public class KeyAuthManager : MonoBehaviour
         }
         #endregion
 
-        KeyAuthApp.init(); // this is needed on Start in order for KeyAuth to work
-        if (KeyAuthApp.response.success)
+        EpicAuthApp.init(); // this is needed on Start in order for EpicAuth to work
+        if (EpicAuthApp.response.success)
         {
             logsLbl.text = logsLbl.text + "\n <color=green> ! <color=white>Successfully Initialized";
         }
@@ -79,11 +79,11 @@ public class KeyAuthManager : MonoBehaviour
 
     private void Update()
     {
-        statusLbl.text = "Status: " + KeyAuthApp.response.success;
+        statusLbl.text = "Status: " + EpicAuthApp.response.success;
 
         if (loggedIn == true)
         {
-            if (Input.GetKeyDown(SendKeyAuthMessage))
+            if (Input.GetKeyDown(SendEpicAuthMessage))
             {
                 SendMessage();
             }
@@ -94,8 +94,8 @@ public class KeyAuthManager : MonoBehaviour
 
     public void Login() // the login function 
     {
-        KeyAuthApp.login(loginUsernameBox.text, loginPasswordBox.text); // notice you make the request, and then check if it was successful or if it failed by using if/else statement(s). 
-        if (KeyAuthApp.response.success)
+        EpicAuthApp.login(loginUsernameBox.text, loginPasswordBox.text); // notice you make the request, and then check if it was successful or if it failed by using if/else statement(s). 
+        if (EpicAuthApp.response.success)
         {
             logsLbl.text = logsLbl.text + "\n <color=green> ! <color=white>Successfully logged in.";
             RememberMe();
@@ -120,21 +120,21 @@ public class KeyAuthManager : MonoBehaviour
     public void UserData() // this is the function to gather all the information about you and display it
     {
         userDataBox.text =
-            "Username: " + KeyAuthApp.user_data.username +
-            "\nExpiry: " + UnixTimeToDateTime(long.Parse(KeyAuthApp.user_data.subscriptions[0].expiry)) +
-            "\nSubscription: " + KeyAuthApp.user_data.subscriptions[0].subscription +
-            "\nIP: " + KeyAuthApp.user_data.ip +
-            "\nHWID: " + KeyAuthApp.user_data.hwid +
-            "\nCreation Date: " + UnixTimeToDateTime(long.Parse(KeyAuthApp.user_data.createdate)) +
-            "\nLast Login: " + UnixTimeToDateTime(long.Parse(KeyAuthApp.user_data.lastlogin)) +
-            "\nTime Left: " + KeyAuthApp.expirydaysleft() + // this is in days
-            "\nTotal Users: " + KeyAuthApp.app_data.numUsers +
-            "\nOnline Users: " + KeyAuthApp.app_data.numOnlineUsers +
-            "\nLicenses: " + KeyAuthApp.app_data.numKeys +
-            "\nVersion: " + KeyAuthApp.app_data.version +
-            "\nCustomer Panel: " + KeyAuthApp.app_data.customerPanelLink;
+            "Username: " + EpicAuthApp.user_data.username +
+            "\nExpiry: " + UnixTimeToDateTime(long.Parse(EpicAuthApp.user_data.subscriptions[0].expiry)) +
+            "\nSubscription: " + EpicAuthApp.user_data.subscriptions[0].subscription +
+            "\nIP: " + EpicAuthApp.user_data.ip +
+            "\nHWID: " + EpicAuthApp.user_data.hwid +
+            "\nCreation Date: " + UnixTimeToDateTime(long.Parse(EpicAuthApp.user_data.createdate)) +
+            "\nLast Login: " + UnixTimeToDateTime(long.Parse(EpicAuthApp.user_data.lastlogin)) +
+            "\nTime Left: " + EpicAuthApp.expirydaysleft() + // this is in days
+            "\nTotal Users: " + EpicAuthApp.app_data.numUsers +
+            "\nOnline Users: " + EpicAuthApp.app_data.numOnlineUsers +
+            "\nLicenses: " + EpicAuthApp.app_data.numKeys +
+            "\nVersion: " + EpicAuthApp.app_data.version +
+            "\nCustomer Panel: " + EpicAuthApp.app_data.customerPanelLink;
 
-        var onlineUsers = KeyAuthApp.fetchOnline();
+        var onlineUsers = EpicAuthApp.fetchOnline();
 
         foreach (var user in onlineUsers)
         {
@@ -144,15 +144,15 @@ public class KeyAuthManager : MonoBehaviour
 
     public void SendMessage() // the function to actually send a message
     {
-        if (KeyAuthApp.chatsend(chatroomInputField.text, chatroomChannel))
+        if (EpicAuthApp.chatsend(chatroomInputField.text, chatroomChannel))
         {
-            chatroomMessageDisplay.text += KeyAuthApp.user_data.username + "     > " + chatroomInputField.text + "          " + UnixTimeToDateTime(DateTimeOffset.Now.ToUnixTimeSeconds()).ToString();
+            chatroomMessageDisplay.text += EpicAuthApp.user_data.username + "     > " + chatroomInputField.text + "          " + UnixTimeToDateTime(DateTimeOffset.Now.ToUnixTimeSeconds()).ToString();
             chatroomInputField.text = null;
         }
         else
         {
-            logsLbl.text = logsLbl.text + "\n" + KeyAuthApp.response.message;
-            Debug.LogError(KeyAuthApp.response.message);
+            logsLbl.text = logsLbl.text + "\n" + EpicAuthApp.response.message;
+            Debug.LogError(EpicAuthApp.response.message);
         }
     }
 
@@ -164,7 +164,7 @@ public class KeyAuthManager : MonoBehaviour
             chatroomMessageDisplay.text = null;
             if (!string.IsNullOrEmpty(chatroomChannel))
             {
-                var messages = KeyAuthApp.chatget(chatroomChannel);
+                var messages = EpicAuthApp.chatget(chatroomChannel);
                 if (messages == null || messages[0].message == "not_found")
                 {
                     Debug.Log("No messages found");
@@ -185,7 +185,7 @@ public class KeyAuthManager : MonoBehaviour
         }
     }
 
-    public DateTime UnixTimeToDateTime(long unixtime) // keyAuth uses UnixTime... in order to get the correct sub, expiry time to display you will need this function :) 
+    public DateTime UnixTimeToDateTime(long unixtime) // EpicAuth uses UnixTime... in order to get the correct sub, expiry time to display you will need this function :) 
     {
         System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Local);
         dtDateTime = dtDateTime.AddSeconds(unixtime).ToLocalTime();
@@ -200,8 +200,8 @@ public class KeyAuthManager : MonoBehaviour
         }
         else
         {
-            KeyAuthApp.register(registerUsernameBox.text, registerPasswordBox.text, registerLicenseBox.text); // notice you make the request, and then check if it was successful or if it failed by using if/else statement(s). 
-            if (KeyAuthApp.response.success)
+            EpicAuthApp.register(registerUsernameBox.text, registerPasswordBox.text, registerLicenseBox.text); // notice you make the request, and then check if it was successful or if it failed by using if/else statement(s). 
+            if (EpicAuthApp.response.success)
             {
                 logsLbl.text = logsLbl.text + "\n Successfully registered.";
                 registerUsernameBox.text = null;
@@ -246,26 +246,26 @@ public class KeyAuthManager : MonoBehaviour
 
     private void SendWebhook()
     {
-        KeyAuthApp.webhook("WebhookID", "param");
+        EpicAuthApp.webhook("WebhookID", "param");
         // send secure request to webhook which is impossible to crack into. the base link set on the website is https://keyauth.site/api/seller/?sellerkey=sellerkeyhere&type=black, which nobody except you can see, so the final request is https://keyauth.site/api/seller/?sellerkey=sellerkeyhere&type=black&ip=1.1.1.1&hwid=abc
     }
 
     private void Download()
     {
-        byte[] result = KeyAuthApp.download("fileID");
+        byte[] result = EpicAuthApp.download("fileID");
         File.WriteAllBytes("PathOfYourChoosing", result);
-        // you can add a direct download link on KeyAuth and you then can add the FileID that is provided to you on the site here and it will download anything you want the users to be able to download
+        // you can add a direct download link on EpicAuth and you then can add the FileID that is provided to you on the site here and it will download anything you want the users to be able to download
     }
 
     private void ShowVariable()
     {
-        Debug.Log(KeyAuthApp.var("VarID"));
+        Debug.Log(EpicAuthApp.var("VarID"));
         // you can enter text on the site, and it will come back here by you using the varid that is provided to you after you create a var
     }
 
     private void CheckBlacklist()
     {
-        if (KeyAuthApp.checkblack())
+        if (EpicAuthApp.checkblack())
         {
             Debug.Log("User is blacklisted");
             Application.Quit();
@@ -280,8 +280,8 @@ public class KeyAuthManager : MonoBehaviour
 
     private void CheckSession()
     {
-        KeyAuthApp.check();
-        if (KeyAuthApp.response.success)
+        EpicAuthApp.check();
+        if (EpicAuthApp.response.success)
         {
             Debug.Log("Session is valid");
         }
@@ -294,20 +294,20 @@ public class KeyAuthManager : MonoBehaviour
 
     private void Upgrade()
     {
-        KeyAuthApp.upgrade("KeyAuthUsernameThatYouWantToUpgrade", "LicenseWithTheSameLevelAsTheSubYouWantToGiveTheUser");
+        EpicAuthApp.upgrade("EpicAuthUsernameThatYouWantToUpgrade", "LicenseWithTheSameLevelAsTheSubYouWantToGiveTheUser");
         // if you would like to upgrade a user you can do so with this code, you do not need to login to use this upgrade feature either
     }
 
     private void Log()
     {
-        KeyAuthApp.log("LogYouWantToSend");
+        EpicAuthApp.log("LogYouWantToSend");
         // if you would like to send a log after certain features you can. Say a user logs in, accesses a certain area of a map/program etc and you want an alert. Just call this function :)
     }
 
     private void LoginRegisterWithLicenseOnly()
     {
-        KeyAuthApp.license("license");
-        if (KeyAuthApp.response.success)
+        EpicAuthApp.license("license");
+        if (EpicAuthApp.response.success)
         {
             Debug.Log("Success!");
             // if it's the first time the user used the license then they have successfully registered and logged in, if it's there second time then successful login 

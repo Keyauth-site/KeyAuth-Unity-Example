@@ -6797,7 +6797,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1963874855}
-        m_TargetAssemblyTypeName: KeyAuthManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: EpicAuthManager, Assembly-CSharp
         m_MethodName: Register
         m_Mode: 1
         m_Arguments:
@@ -6904,7 +6904,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Welcome To KeyAuth Unity Example
+  m_text: Welcome To EpicAuth Unity Example
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7399,7 +7399,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1963874855}
-        m_TargetAssemblyTypeName: KeyAuthManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: EpicAuthManager, Assembly-CSharp
         m_MethodName: Login
         m_Mode: 1
         m_Arguments:
@@ -8251,7 +8251,7 @@ GameObject:
   - component: {fileID: 1963874856}
   - component: {fileID: 1963874855}
   m_Layer: 0
-  m_Name: $KeyAuth Manger
+  m_Name: $EpicAuth Manger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8288,7 +8288,7 @@ MonoBehaviour:
   chatroomMessageDisplay: {fileID: 9100801}
   timeToGatherMessages: 10
   chatroomChannel: testing
-  SendKeyAuthMessage: 13
+  SendEpicAuthMessage: 13
 --- !u!4 &1963874856
 Transform:
   m_ObjectHideFlags: 0
